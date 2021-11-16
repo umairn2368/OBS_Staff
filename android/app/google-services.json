@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "776532327926",
+    "firebase_url": "https://obsstaff-deeeb-default-rtdb.firebaseio.com",
+    "project_id": "obsstaff-deeeb",
+    "storage_bucket": "obsstaff-deeeb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776532327926:android:a39e6862fbfd8b5e6b9bd7",
+        "android_client_info": {
+          "package_name": "com.example.obs_staff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776532327926-q2sj547i72fu4ui936lu1mki8l7ovj1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvpgtAIZKwcrPGaj3DGV-2hec60DiIuQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776532327926-q2sj547i72fu4ui936lu1mki8l7ovj1i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776532327926-q1bh8jq1p3etd56j65rksm6f5p7spio3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.obsStaff"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
