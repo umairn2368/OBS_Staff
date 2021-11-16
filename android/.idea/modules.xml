@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1755264600/android.firebase_core.iml" filepath="$PROJECT_DIR$/.idea/modules/-1755264600/android.firebase_core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1999307076/android.firebase_database.iml" filepath="$PROJECT_DIR$/.idea/modules/1999307076/android.firebase_database.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/956235682/android.fluttertoast.iml" filepath="$PROJECT_DIR$/.idea/modules/956235682/android.fluttertoast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/606139887/android.shared_preferences.iml" filepath="$PROJECT_DIR$/.idea/modules/606139887/android.shared_preferences.iml" />
     </modules>
   </component>
 </project>
