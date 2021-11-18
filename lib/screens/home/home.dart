@@ -16,7 +16,7 @@ import 'package:obs_staff/screens/search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -35,6 +35,8 @@ class _HomeState extends State<Home> {
   bool isCheckOut = false;
 
   bool isLoading = true;
+  bool employeeDate = false;
+
   var employeeName = '';
   var employeeDesignation = '';
   var employeeStatus = '';
@@ -44,10 +46,19 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    getUser();
     getUserData();
   }
 
-  getUserData() {
+  @override
+  void dispose() {
+    print('dispose');
+    super.dispose();
+    getUser();
+    getUserData();
+  }
+
+  getUser() {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
@@ -90,15 +101,51 @@ class _HomeState extends State<Home> {
       var todayAttendence = AttendenceModel.fromMap(result.data());
       if (todayAttendence.checkInTime != "" &&
           todayAttendence.checkOutTime != "") {
-        this.setState(() {
+        setState(() {
           isCheckOut = true;
         });
-        print(isCheckOut);
       } else {
-        this.setState(() {
+        setState(() {
           isCheckOut = false;
         });
-        print(isCheckOut);
+      }
+    });
+  }
+
+  getUserData() {
+    DateTime now = DateTime.now();
+
+    var time = (now.hour.toString() +
+        ":" +
+        now.minute.toString() +
+        ":" +
+        now.second.toString());
+
+    var date = (now.day.toString() +
+        ":" +
+        now.month.toString() +
+        ":" +
+        now.year.toString());
+
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('attendence');
+
+    collectionReference
+        .where("userId", isEqualTo: user!.uid)
+        .where("date", isEqualTo: date)
+        .get()
+        .then((querySnapshot) {
+      var result = querySnapshot.docs.first;
+      var todayAttendence = AttendenceModel.fromMap(result.data());
+      if (todayAttendence.checkInTime != "" &&
+          todayAttendence.checkOutTime != "") {
+        setState(() {
+          isCheckOut = true;
+        });
+      } else {
+        setState(() {
+          isCheckOut = false;
+        });
       }
     });
   }
@@ -106,6 +153,7 @@ class _HomeState extends State<Home> {
   checkIn() {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
       "status": "CheckIn",
+      "date": "",
     }, SetOptions(merge: true)).then((_) {
       print("CheckIn Success!");
     });
@@ -134,16 +182,12 @@ class _HomeState extends State<Home> {
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('attendence');
     collectionReference.add(data);
+
+    getUser();
     getUserData();
   }
 
   checkOut() {
-    FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
-      "status": "CheckOut",
-    }, SetOptions(merge: true)).then((_) {
-      print("success!");
-    });
-
     DateTime now = DateTime.now();
 
     var time = (now.hour.toString() +
@@ -158,7 +202,12 @@ class _HomeState extends State<Home> {
         ":" +
         now.year.toString());
 
-    var resultFinal;
+    FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
+      "status": "CheckOut",
+      "date": date,
+    }, SetOptions(merge: true)).then((_) {
+      print("success!");
+    });
 
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('attendence');
@@ -168,17 +217,17 @@ class _HomeState extends State<Home> {
         .where("date", isEqualTo: date)
         .get()
         .then((querySnapshot) {
-      var result = querySnapshot.docs.first;
-      print(querySnapshot.docs.first.id);
       FirebaseFirestore.instance
           .collection("attendence")
           .doc(querySnapshot.docs.first.id)
           .set({
         "checkOutTime": time,
+        "date": date,
       }, SetOptions(merge: true)).then((_) {
         print("checkOutTime Success!");
       });
     });
+    getUser();
     getUserData();
   }
 
@@ -210,11 +259,8 @@ class _HomeState extends State<Home> {
                   ? Column(children: [
                       SizedBox(height: 50.h),
                       Center(
-                          child: 
-                          // CircularProgressIndicator(
-                          //     color: Color.fromRGBO(0, 0, 0, 1))
-                          
-                          SpinKitCircle(color: Color.fromRGBO(255, 212, 0, 1), size:30))
+                          child: SpinKitCircle(
+                              color: Color.fromRGBO(255, 212, 0, 1), size: 30))
                     ])
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +286,7 @@ class _HomeState extends State<Home> {
                                           shape: BoxShape.circle,
                                           image: DecorationImage(
                                               image: NetworkImage(
-                                                  "${this.employeeAvatar}"),
+                                                  "${employeeAvatar}"),
                                               fit: BoxFit.fill)),
                                     ),
                                     SizedBox(width: 19.w),
@@ -251,15 +297,15 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(height: 46.h),
-                                        Text("${this.employeeName}",
+                                        Text("${employeeName}",
                                             style: titleBoldStyle),
                                         SizedBox(height: 5.h),
                                         Text(
-                                          "${this.employeeDesignation}",
+                                          "${employeeDesignation}",
                                           style: titleStyle,
                                         ),
                                         SizedBox(height: 5.h),
-                                        Text("${this.employeeStatus}",
+                                        Text("${employeeStatus}",
                                             style: titleStyle),
                                       ],
                                     ),

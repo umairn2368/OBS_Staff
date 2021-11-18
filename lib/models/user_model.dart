@@ -5,9 +5,10 @@ class UserModel {
   String? role;
   String? status;
   String? avatar;
+    String? date;
 
   UserModel(
-      {this.uid, this.email, this.name, this.role, this.status, this.avatar});
+      {this.uid, this.email, this.name, this.role, this.status, this.avatar, this.date});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
@@ -18,6 +19,7 @@ class UserModel {
       role: map['role'],
       status: map['status'],
       avatar: map['avatar'],
+      date: map['date'],
     );
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, use_key_in_widget_constructors, unused_field, prefer_const_constructors
+// ignore_for_file: unused_import, use_key_in_widget_constructors, unused_field, prefer_const_constructors, non_constant_identifier_names
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -137,11 +137,9 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: Container(
-        child: Image(
-          image: AssetImage(
-            'assets/images/login-bottom.png',
-          ),
+      bottomNavigationBar: Image(
+        image: AssetImage(
+          'assets/images/login-bottom.png',
         ),
       ),
       body:
@@ -264,16 +262,19 @@ class _LoginState extends State<Login> {
                     color: Color.fromRGBO(255, 212, 0, 1),
                     elevation: 5.0,
                     child: GestureDetector(
-                      onTap: () {
-                        var email = _email.text;
-                        var password = _password.text;
-                        setState(() {
-                          isLoading=false;
-                        });
-                        Future.delayed(const Duration(milliseconds: 4000), () {
-                          SignIn(email, password);
-                        });
-                      },
+                      onTap: isLoading != true
+                          ? null
+                          : () {
+                              var email = _email.text;
+                              var password = _password.text;
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Future.delayed(const Duration(milliseconds: 1000),
+                                  () {
+                                SignIn(email, password);
+                              });
+                            },
                       child: Center(
                         child: isLoading
                             ? Text(
@@ -299,20 +300,28 @@ class _LoginState extends State<Login> {
   }
 
   void SignIn(String email, String password) async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-
     if (email.isEmpty && password.isEmpty) {
+      setState(() {
+        isLoading = true;
+      });
       showAlertDialog(context);
     } else if (email.isEmpty) {
+      setState(() {
+        isLoading = true;
+      });
       showAlertDialogEmptyEmail(context);
     } else if (password.isEmpty) {
+      setState(() {
+        isLoading = true;
+      });
       showAlertDialogEmptyPassword(context);
     } else {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uuid) => {
+                setState(() {
+                  isLoading = true;
+                }),
                 Fluttertoast.showToast(msg: "Login Successfully"),
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -325,6 +334,9 @@ class _LoginState extends State<Login> {
                 )
               })
           .catchError((e) {
+        setState(() {
+          isLoading = true;
+        });
         Fluttertoast.showToast(msg: e!.message);
         if (e!.message ==
             'There is no user record corresponding to this identifier. The user may have been deleted.') {
